@@ -1,3 +1,4 @@
+from DES_encryption import des256, des_encrypt
 import time
 import hashlib
 import json
@@ -18,7 +19,8 @@ class Block(object):
         encoded_block = string_block.encode()
         claculateHash = hashlib.sha256(encoded_block)
         hex_hash = claculateHash.hexdigest()
-        return str(hex_hash)
+        desEncrypted = des256(hex_hash)
+        return str(desEncrypted)
 
     def mineBlock(self):
         while(self.hash[0:self.difficulty] != self.get_target()):

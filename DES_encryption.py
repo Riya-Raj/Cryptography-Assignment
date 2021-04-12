@@ -43,9 +43,8 @@ ip_inverse = [40, 8, 48, 16, 56, 24, 64, 32,
 
 
 
-def inputMessageAndKey():
+def inputMessageAndKey(m):
 
-    m = input("Enter message: ")
     lst=[]
     lst[:0]=m
     lst2=[]
@@ -56,10 +55,10 @@ def inputMessageAndKey():
     for ele in lst2:
       pt+=ele
 
-    k = '133457799BBCDFF1'
+    #k = '133457799BBCDFF1'
     key = '0001001100110100010101110111100110011011101111001101111111110001'
 
-    return pt, key
+    return pt,key
 
 ### Can be used for all the rearrangements ###
 def rearrange_data(reorder_table, data):
@@ -261,15 +260,22 @@ def EncryptingTheData(subkeys,ip):
     for ele in lst4:
       final_hex+=ele
 
-    print('The encrypted text is:',final_hex.upper())
+    #print('The encrypted text is:',final_hex.upper())
     return final_hex.upper()
 
-
-
-if __name__ == "__main__":
-    m,key = inputMessageAndKey()
+def des_encrypt(m):
+    m,key = inputMessageAndKey(m)
     ip = rearrange_data(intial_permutation_table, m)
     kplus = rearrange_data(pc1,key)
     cndn = left_shift(shift_table, kplus)
     subkeys = subkeysGeneration(pc2,cndn)
     encrypted_message = EncryptingTheData(subkeys,ip)
+    return encrypted_message
+
+def des256(data):
+    y = ''
+    for i in range(0,64,16):
+        x = data[i:i+16]
+        a = des_encrypt(x)
+        y += a
+    return y 
