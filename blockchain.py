@@ -1,7 +1,8 @@
-from DES_encryption import des256, des_encrypt
 import time
 import hashlib
 import json
+from DES_encryption import *
+from random import randint
 
 class Block(object):
     difficulty = 3
@@ -19,8 +20,8 @@ class Block(object):
         encoded_block = string_block.encode()
         claculateHash = hashlib.sha256(encoded_block)
         hex_hash = claculateHash.hexdigest()
-        desEncrypted = des256(hex_hash)
-        return str(desEncrypted)
+        des_hash = des256(hex_hash)
+        return str(des_hash)
 
     def mineBlock(self):
         while(self.hash[0:self.difficulty] != self.get_target()):
@@ -39,29 +40,47 @@ class Block(object):
         print("Proof: ", self.key)
         return ""
 
+    # def json_block(self):
 
-def isChainValid(Bcoin):
-    for i in range(1, len(Bcoin)):
-        cBlock = Bcoin[i]
-        pBlock = Bcoin[i-1]
-        if(cBlock.hash != cBlock.calculateHash()):
-            print("Current Hash is nat equal")
-            return False
-        if(pBlock.hash != cBlock.previousHash):
-            print("Previous Hashes are not equal")
-            return False
-        if(cBlock.hash[:cBlock.difficulty] != cBlock.get_target()):
-            print("This Block has not been mined: ", i)
-            return False
-    return True
+
+class Wallet(object):
+    def __init__(self, name, balance):
+        self.name = name
+        self.balance = balance
+        self.userID = randint(0, 10)
+        self.transactionHistory = []
+
+    def viewUser(self):
+        print("User details and transactions: ")
+        print("Wallet: ", self.name)
+        print("Balance: ", self.balance)
+        print("Transaction Hystory:")
+        for t in self.transactionHistory:
+            print(t)
 
 class BlockChain(object):
     def __init__(self):
         self.chain = []
         self.pending_transactions = []
+        self.wallets = {}
+
         block_start = Block("Genesis Block", "0")
         block_start.mineBlock()
         self.chain.append(block_start)
+
+    def new_wallet(self, wname, balance):
+        user = Wallet(wname, balance)
+        self.wallets[wname] = user
+
+    def make_transaction(self, fromwallet, amount, towallet):
+        # zkp()
+
+        self.wallets[fromwallet].balance -= amount
+        self.wallets[fromwallet].transactionHistory.append(str(amount) + " sent to " + str(towallet))
+        self.wallets[towallet].balance += amount
+        self.wallets[towallet].transactionHistory.append(str(amount) + " recieved from " + str(fromwallet))
+
+        self.add_transaction(fromwallet, amount, towallet)
 
     def createBlock(self):
         t = self.get_transactions()
@@ -73,7 +92,7 @@ class BlockChain(object):
         self.chain.append(block)
 
     def add_transaction(self, sender, amount, recipient):
-        trans = str(sender) + " sent " + str(amount) + " to " + str(recipient)
+        trans = str(sender) + " sent " + str(amount) + " to " + str(recipient) + ". "
         self.pending_transactions.append(trans)
     
     def get_transactions(self):
@@ -82,13 +101,36 @@ class BlockChain(object):
             transactions += s
         return transactions
 
-BITScoin = BlockChain()
-BITScoin.add_transaction("Jai", 100, "Red")
-BITScoin.createBlock()
-
-print(BITScoin.chain[0].print_block())
-print(BITScoin.chain[1].print_block())
-print(isChainValid(BITScoin.chain))
+    # def save_chain(self):
 
 
+def isChainValid(chain):
+    for i in range(1, len(chain)):
+        cBlock = chain[i]
+        pBlock = chain[i-1]
+        if(cBlock.hash != cBlock.calculateHash()):
+            print("Current Hash is nat equal")
+            return False
+        if(pBlock.hash != cBlock.previousHash):
+            print("Previous Hashes are not equal")
+            return False
+        if(cBlock.hash[:cBlock.difficulty] != cBlock.get_target()):
+            print("This Block has not been mined: ", i)
+            return False
+    return True
 
+
+
+if __name__ == "__main__":
+    BITScoin = BlockChain()
+    BITScoin.new_wallet("Jai", 1000)
+    BITScoin.new_wallet("Red", 500)
+    BITScoin.make_transaction("Jai", 100, "Red")
+
+    BITScoin.createBlock()
+
+    print(BITScoin.chain[0].print_block())
+    print(BITScoin.chain[1].print_block())
+    print(isChainValid(BITScoin.chain))
+
+    print(BITScoin.wallets["Jai"].viewUser())
