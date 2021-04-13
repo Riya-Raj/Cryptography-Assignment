@@ -21,8 +21,8 @@ class Block(object):
         encoded_block = string_block.encode()
         claculateHash = hashlib.sha256(encoded_block)
         hex_hash = claculateHash.hexdigest()
-        # des_hash = des256(hex_hash)
-        return str(hex_hash)
+        des_hash = des256(hex_hash)
+        return str(des_hash)
 
     def mineBlock(self):
         while(self.hash[0:self.difficulty] != self.get_target()):
