@@ -21,8 +21,8 @@ class Block(object):
         encoded_block = string_block.encode()
         claculateHash = hashlib.sha256(encoded_block)
         hex_hash = claculateHash.hexdigest()
-        des_hash = des256(hex_hash)
-        return str(des_hash)
+        # des_hash = des256(hex_hash)
+        return str(hex_hash)
 
     def mineBlock(self):
         while(self.hash[0:self.difficulty] != self.get_target()):
@@ -51,12 +51,17 @@ class Block(object):
         }
         return block
 
+p = 11
+g = 2
+verify = 5
+
 class Wallet(object):
     def __init__(self, name, balance, ID = None, th = None):
         self.name = name
         self.balance = balance
         self.userID = ID or randint(0, 10)
         self.transactionHistory = th or []
+        self.y = (g**self.userID) % p
 
     def viewUser(self):
         print("User details and transactions: ")
@@ -76,6 +81,31 @@ class Wallet(object):
         }
         return wallet
 
+    #sender proover
+    def geth(self):
+        self.r = randint(0, p-1)
+        h = (g**self.r) % p
+        # print("r : ", self.r)
+        # print("h : ", h)
+        return h
+    def gets(self, b):
+        s = (self.r + (b*self.userID)) % (p-1)
+        # print("s : ", s)
+        return s
+    #recipient checker
+    def cy(self, y):
+        self.cy = y
+    def ch(self, h):
+        self.ch = h
+        self.rb = randint(0, 1)
+        # print("b : ", self.rb)
+        return self.rb
+    def verify(self, s):
+        left = (g**s) % p
+        right = (self.ch*(self.cy**self.rb)) % p
+        # print(left, " ? ", right)
+        return left == right
+    
 class BlockChain(object):
     def __init__(self):
         self.chain = []
@@ -106,15 +136,25 @@ class BlockChain(object):
         self.wallets[wname] = user
 
     def make_transaction(self, fromwallet, amount, towallet):
-        # zkp()
+        if self.verifyTransaction(fromwallet, towallet):
+            self.wallets[fromwallet].balance -= amount
+            self.wallets[fromwallet].transactionHistory.append(str(amount) + " sent to " + str(towallet))
+            self.wallets[towallet].balance += amount
+            self.wallets[towallet].transactionHistory.append(str(amount) + " recieved from " + str(fromwallet))
+            print("Transaction Succeded")
+            self.add_transaction(fromwallet, amount, towallet)
+        else:
+            print("Transaction failed...")
 
-        self.wallets[fromwallet].balance -= amount
-        self.wallets[fromwallet].transactionHistory.append(str(amount) + " sent to " + str(towallet))
-        self.wallets[towallet].balance += amount
-        self.wallets[towallet].transactionHistory.append(str(amount) + " recieved from " + str(fromwallet))
+    def verifyTransaction(self, fromwallet, towallet):
+        y = self.wallets[fromwallet].y
+        # print("y = ", y)
+        self.wallets[towallet].cy(y)
 
-        self.add_transaction(fromwallet, amount, towallet)
-
+        for i in range(0, verify):
+            b = self.wallets[towallet].ch(self.wallets[fromwallet].geth())
+            return self.wallets[towallet].verify(self.wallets[fromwallet].gets(b))
+        
     def createBlock(self):
         t = self.get_transactions()
         self.pending_transactions = []
