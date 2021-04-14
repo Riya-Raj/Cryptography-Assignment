@@ -85,12 +85,9 @@ class Wallet(object):
     def geth(self):
         self.r = randint(0, p-1)
         h = (g**self.r) % p
-        # print("r : ", self.r)
-        # print("h : ", h)
         return h
     def gets(self, b):
         s = (self.r + (b*self.userID)) % (p-1)
-        # print("s : ", s)
         return s
     #recipient checker
     def cy(self, y):
@@ -98,12 +95,10 @@ class Wallet(object):
     def ch(self, h):
         self.ch = h
         self.rb = randint(0, 1)
-        # print("b : ", self.rb)
         return self.rb
     def verify(self, s):
         left = (g**s) % p
         right = (self.ch*(self.cy**self.rb)) % p
-        # print(left, " ? ", right)
         return left == right
     
 class BlockChain(object):
@@ -148,7 +143,6 @@ class BlockChain(object):
 
     def verifyTransaction(self, fromwallet, towallet):
         y = self.wallets[fromwallet].y
-        # print("y = ", y)
         self.wallets[towallet].cy(y)
 
         for i in range(0, verify):
@@ -255,27 +249,10 @@ if __name__ == "__main__":
             BITScoin.save_wallets()
 
         elif command == 6:
-            BITScoin.createBlock()
+            if len(BITScoin.pending_transactions) != 0:
+                BITScoin.createBlock()
             BITScoin.save_chain()
             BITScoin.save_wallets()
             break
 
         print("")
-    # BITScoin.new_wallet("Jai", 1000)
-    # BITScoin.new_wallet("Red", 500)
-
-    # BITScoin.make_transaction("Jai", 100, "Red")
-    # BITScoin.make_transaction("Red", 1000, "Jai")
-
-    # BITScoin.createBlock()
-
-    # print(BITScoin.chain[0].print_block())
-    # print(BITScoin.chain[1].print_block())
-    # print(isChainValid(BITScoin.chain))
-
-    # BITScoin.print_chain()
-
-    # print(BITScoin.wallets["Jai"].viewUser())
-
-    # BITScoin.save_chain()
-    # BITScoin.save_wallets()

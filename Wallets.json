@@ -1,21 +1,23 @@
 {
     "Ri": {
         "name": "Ri",
-        "balance": 3600,
+        "balance": 3602,
         "ID": 7,
         "th": [
             "300 recieved from A",
             "500 recieved from Nived",
-            "2500 recieved from Neema"
+            "2500 recieved from Neema",
+            "2 recieved from A"
         ]
     },
     "A": {
         "name": "A",
-        "balance": 3350,
+        "balance": 3348,
         "ID": 3,
         "th": [
             "300 sent to Ri",
-            "350 sent to Anukriti"
+            "350 sent to Anukriti",
+            "2 sent to Ri"
         ]
     },
     "Anukriti": {
