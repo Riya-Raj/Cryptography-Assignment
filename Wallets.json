@@ -1,0 +1,78 @@
+{
+    "Ri": {
+        "name": "Ri",
+        "balance": 3600,
+        "ID": 7,
+        "th": [
+            "300 recieved from A",
+            "500 recieved from Nived",
+            "2500 recieved from Neema"
+        ]
+    },
+    "A": {
+        "name": "A",
+        "balance": 3350,
+        "ID": 3,
+        "th": [
+            "300 sent to Ri",
+            "350 sent to Anukriti"
+        ]
+    },
+    "Anukriti": {
+        "name": "Anukriti",
+        "balance": 10050,
+        "ID": 3,
+        "th": [
+            "100 sent to Rohan",
+            "200 sent to Rishika",
+            "350 recieved from A"
+        ]
+    },
+    "Nived": {
+        "name": "Nived",
+        "balance": 8500,
+        "ID": 5,
+        "th": [
+            "1000 recieved from Neema",
+            "500 sent to Ri"
+        ]
+    },
+    "Neema": {
+        "name": "Neema",
+        "balance": 16050,
+        "ID": 10,
+        "th": [
+            "1000 sent to Nived",
+            "125 sent to Mohit",
+            "225 sent to Rohan",
+            "2500 sent to Ri",
+            "100 sent to Rishika"
+        ]
+    },
+    "Mohit": {
+        "name": "Mohit",
+        "balance": 4125,
+        "ID": 4,
+        "th": [
+            "125 recieved from Neema"
+        ]
+    },
+    "Rohan": {
+        "name": "Rohan",
+        "balance": 5325,
+        "ID": 4,
+        "th": [
+            "100 recieved from Anukriti",
+            "225 recieved from Neema"
+        ]
+    },
+    "Rishika": {
+        "name": "Rishika",
+        "balance": 2300,
+        "ID": 4,
+        "th": [
+            "200 recieved from Anukriti",
+            "100 recieved from Neema"
+        ]
+    }
+}

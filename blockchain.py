@@ -1,7 +1,7 @@
 import time
 import hashlib
 import json
-from DES_encryption import *
+from DES_encryption import des256
 from random import randint
 from os import path
 
@@ -21,8 +21,8 @@ class Block(object):
         encoded_block = string_block.encode()
         claculateHash = hashlib.sha256(encoded_block)
         hex_hash = claculateHash.hexdigest()
-        # des_hash = des256(hex_hash)
-        return str(hex_hash)
+        des_hash = des256(hex_hash)
+        return str(des_hash)
 
     def mineBlock(self):
         while(self.hash[0:self.difficulty] != self.get_target()):
@@ -51,8 +51,8 @@ class Block(object):
         }
         return block
 
-p = 11
-g = 2
+p = 17903
+g = 179
 verify = 5
 
 class Wallet(object):
